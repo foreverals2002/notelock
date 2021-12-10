@@ -1,0 +1,83 @@
+<!-- <div class="container py-5"> -->
+  <form class="" id="note_content_save_form" action="/note_update/" method="post" style="display: none">
+    {% csrf_token %}
+    <<input type="text" id="folder_name_form" name="folder_name_form" value="{{ folder_name }}">
+    <input type="text" id="note_title_form" name="note_title_form" value="default_title">
+    <input type="textarea" id="note_content_form" name="note_content_form" value="This is the note content area.">
+    <input type="submit" name="" value="">
+  </form>
+  <div class="row justify-content-center">
+    <div class="col-lg-1" style="font-size: 1.4rem; margin-top: 30px">
+      <strong>Title: </strong>
+    </div>
+    <div class="col-lg-7" id="note_title" name="note_title" contenteditable="true" style="font-size: 1.4rem; margin-top: 30px">
+      {{ note_title }}
+    </div>
+    <div class="col-lg-3">
+      <button class="btn btn-primary" name="save_button" onclick="javascript:decrypt_content();" style="margin-top: 30px">Decrypt</button>
+      <button class="btn btn-primary" name="save_button" onclick="javascript:save_request();" style="margin-top: 30px">Save</button>
+      <a class="btn btn-danger" href="/delete_note/{{ folder_name }}/{{ note_title }}" role="button" style="margin-top: 30px">Delete</a>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-lg-11" id="note_content" name="note_content" contenteditable="true" style="font-size: 1.4rem; margin-top: 20px; background-color:ivory">
+{% autoescape off %}
+      {{ note_content }}
+{% endautoescape %}
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    const encryptWithAES = (text, passphrase) => {
+      let encryptedText = CryptoJS.AES.encrypt(text, passphrase).toString();
+      return encryptedText.toString();
+    };
+
+    const decryptWithAES = (ciphertext, passphrase) => {
+      console.log(ciphertext.trim())
+      const bytes = CryptoJS.AES.decrypt(ciphertext.trim(), passphrase);
+      console.log(bytes.toString(CryptoJS.enc.Utf8));
+      return bytes.toString(CryptoJS.enc.Utf8);
+    };
+
+    let create_folder = function() {
+      let newFolderName = prompt("Please enter the new folder name", "new folder name");
+      if (newFolderName == null || newFolderName == ""){
+        return;
+      } else {
+        new_folder_request(newFolderName);
+      }
+    }
+
+    let new_folder_request = function(newName){
+      let folder_input_value = document.getElementById("newFolderName");
+      let new_form = document.getElementById("new_folder_form");
+      folder_input_value.value = newName;
+      new_form.submit();
+    }
+
+    let save_request = function() {
+      let save_form = document.getElementById("note_content_save_form");
+      let title_area = document.getElementById("note_title_form");
+      let content_area = document.getElementById("note_content_form");
+
+      let content_data = document.getElementById("note_content");
+      let title_data = document.getElementById("note_title");
+      // content_area.value = content_data.innerHTML;
+      let passphrase = prompt("Please enter the passphrase: ")
+      content_area.value = encryptWithAES(content_data.innerHTML, passphrase);
+      title_area.value = title_data.innerHTML;
+
+      save_form.submit();
+    }
+
+    let decrypt_content = function() {
+      let content_area = document.getElementById("note_content");
+      let encryptedText = content_area.innerHTML;
+      let passphrase = prompt("Please enter the passphrase: ")
+      let decryptedText = decryptWithAES(encryptedText, passphrase);
+      content_area.innerHTML = decryptedText;
+    }
+  </script>
+<!-- </div> -->

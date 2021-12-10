@@ -1,0 +1,45 @@
+<div class="col-lg-3">
+  <button class="btn btn-primary" name="create_folder" onclick="javascript:create_folder();" style="margin-top: 30px">Create New Folder</button>
+</div>
+<div class="col-lg-3" style="font-size: 1.4rem; margin-top: 30px">
+  <strong>All Folders: </strong>
+</div>
+
+<table class="table" style="margin-top: 15px">
+  <thead>
+    <tr>
+      <th scope="col">Folder Name</th>
+      <th scope="col">Owner</th>
+      <th scope="col">Last Access</th>
+      <th scope="col">Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for folder in folder_list %}
+    <tr>
+      <th scope="row"><a href="/view_folder_content/{{ folder.folder_name }}">{{ folder.folder_name }}</a></th>
+      <td>{{ folder.owner }}</td>
+      <td>{{ folder.date_last_used }}</td>
+      <td><a class="btn btn-danger" href="/delete_folder/{{ folder.folder_name }}" role="button">Delete</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<script type="text/javascript">
+  let create_folder = function() {
+    let newFolderName = prompt("Please enter the new folder name", "new folder name");
+    if (newFolderName == null || newFolderName == ""){
+      return;
+    } else {
+      new_folder_request(newFolderName);
+    }
+  }
+
+  let new_folder_request = function(newName){
+    let folder_input_value = document.getElementById("newFolderName");
+    let new_form = document.getElementById("new_folder_form");
+    folder_input_value.value = newName;
+    new_form.submit();
+  }
+</script>

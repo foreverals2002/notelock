@@ -1,0 +1,47 @@
+<div class="row justify-content-center">
+  <div class="col-lg-8" style="font-size: 1.4rem; margin-top: 30px">
+    <strong>Notes</strong>
+  </div>
+  <div class="col-lg-3">
+    <button class="btn btn-primary" name="create_note_button" onclick="javascript:window.location.href = '/create_note/{{ folder_name }}';" style="margin-top: 30px">Create New Note</button>
+  </div>
+</div>
+
+<table class="table" style="margin-top: 40px">
+  <thead>
+    <tr>
+      <th scope="col">Title</th>
+      <th scope="col">Last Access</th>
+      <th scope="col">Creation Date</th>
+      <th scope="col">Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for note in note_list %}
+    <tr>
+      <th scope="row"><a href="/view_note_content/{{ note.folder_name }}/{{ note.note_name }}">{{ note.note_name }}</a></th>
+      <td>{{ note.date_last_used }}</td>
+      <td>{{ note.date_created }}</td>
+      <td><a class="btn btn-danger" href="/delete_note/{{ note.folder_name }}/{{ note.note_name }}" role="button">Delete</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<script type="text/javascript">
+  let create_folder = function() {
+    let newFolderName = prompt("Please enter the new folder name", "new folder name");
+    if (newFolderName == null || newFolderName == ""){
+      return;
+    } else {
+      new_folder_request(newFolderName);
+    }
+  }
+
+  let new_folder_request = function(newName){
+    let folder_input_value = document.getElementById("newFolderName");
+    let new_form = document.getElementById("new_folder_form");
+    folder_input_value.value = newName;
+    new_form.submit();
+  }
+</script>

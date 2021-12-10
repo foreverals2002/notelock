@@ -1,0 +1,56 @@
+{% include "myApp/header.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="row">
+    <form action="/create_folder/" id="new_folder_form" method="post" style="display:none">
+      {% csrf_token %}
+      <input type="text" name="folderName" id="newFolderName" value="testValue">
+      <input type="submit">
+    </form>
+
+  </div>
+  <div class="col-lg-10">
+    <div class="row">
+      <div class="col-lg-2" style="margin-top: 30px">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="/folders">All Folders</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="javascript:create_folder()">+ New Folder</a>
+          </li>
+          {% for folder in folder_list %}
+          <li class="nav-item">
+            <a class="nav-link" href="/view_folder_content/{{ folder.folder_name }}">{{ folder.folder_name }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="col-lg-10">
+
+{% endblock %}
+
+{% include "myApp/list_folders.html" %}
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script type="text/javascript">
+  let create_folder = function() {
+    let newFolderName = prompt("Please enter the new folder name", "new folder name");
+    if (newFolderName == null || newFolderName == ""){
+      return;
+    } else {
+      new_folder_request(newFolderName);
+    }
+  }
+</script>
+
+
+
+
+
+{% include "myApp/footer.html" %}
